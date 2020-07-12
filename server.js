@@ -8,7 +8,7 @@ mongoose.connect('mongodb://localhost:27017/mern-boilerplate', {
     useUnifiedTopology: true
     })
     .then(() => console.log('Database is connected'))
-    .catch((error) => console.log(error));
+    .catch((error) => console.error(error));
 
 app.get('/', (req, res) => {
     res.send('Hello world');
