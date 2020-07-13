@@ -4,7 +4,8 @@
   "description": "MERN stack boilerplate code.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "backend": "nodemon server.js"
   },
   "author": "meenachinmay",
   "license": "MIT",
@@ -13,5 +14,8 @@
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "mongoose": "^5.9.23"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
