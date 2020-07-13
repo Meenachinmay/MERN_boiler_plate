@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config/keys');
 
 const { User } = require('./models/User');
+const { auth } = require('./middlewares/auth');
 
 // connect the mongodb database
 mongoose.connect(config.mongoURI, {
@@ -21,6 +22,19 @@ mongoose.connect(config.mongoURI, {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+// middleware route
+app.get('/api/user/auth', auth, (req, res) => {
+    res.status(200).json({
+        _id: req.user._id,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastName: req.user.lastName,
+        role: req.user.role
+
+    });
+});
 
 // New user registration
 app.post('/api/users/register', (req,res) => {
@@ -60,11 +74,18 @@ app.post('/api/user/login', (req, res) => {
         });
 
         // generate token
-        jwt.sign({_id: user._id}, config.JWT_TOKEN_SECRET,(err, token) => {
+        jwt.sign({data: user._id}, config.JWT_TOKEN_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) console.error(err);
-            return res.cookie("x_auth", token).status(200).json({
-                loginSuccess: true,
-                token: token
+            
+            // save this token to the database
+            user.token = token;
+            
+            user.save((err, tokenSaved) => {
+                if (err) console.error(err);
+                return res.cookie("x_auth", token).status(200).json({
+                    loginSuccess: true,
+                    token: token
+                });
             });
         });
     });

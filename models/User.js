@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const config = require('../config/keys');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -62,18 +63,18 @@ userSchema.pre('save', function(next) {
     });
 });
 
-// userSchema.methods.generateToken = (callback) => {
-//     var user = this;
-    
-//     var token = jwt.sign({data: user._id},'secret', { expiresIn: 60*60 });
 
-//     user.token = token;
+userSchema.statics.findByToken = function(token, callback){
+    const user = this;
 
-//     user.save((err, user) => {
-//         if (err) return callback(err);
-//         callback(null, user);
-//     });
-// }
+    jwt.verify(token, config.JWT_TOKEN_SECRET, (err, decode) => {
+        if (err) console.error(err);
+        user.findOne({"_id": decode, "token": token}, (err, user) => {
+            if (err) return callback(err);
+            return callback(null, user);
+        })
+    })
+}
 
 const User = mongoose.model('User', userSchema);
 
