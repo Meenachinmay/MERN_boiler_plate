@@ -69,7 +69,7 @@ userSchema.statics.findByToken = function(token, callback){
 
     jwt.verify(token, config.JWT_TOKEN_SECRET, (err, decode) => {
         if (err) console.error(err);
-        user.findOne({"_id": decode, "token": token}, (err, user) => {
+        user.findOne({"_id": decode.data, "token": token}, (err, user) => {
             if (err) return callback(err);
             return callback(null, user);
         })

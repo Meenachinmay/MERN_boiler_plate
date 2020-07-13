@@ -14,7 +14,8 @@ const { auth } = require('./middlewares/auth');
 // connect the mongodb database
 mongoose.connect(config.mongoURI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
     })
     .then(() => console.log('Database is connected'))
     .catch((error) => console.error(error));
@@ -88,6 +89,19 @@ app.post('/api/user/login', (req, res) => {
                 });
             });
         });
+    });
+});
+
+
+// Logout user
+app.get('/api/user/logout', auth, (req,res) => {
+    User.findOneAndUpdate({"_id": req.user._id}, {"token": ""}, (err, doc) => {
+        if (err) return res.status(400).json({
+            success: false, err
+        })
+        return res.status(200).json({
+            success: true
+        })
     });
 });
 
