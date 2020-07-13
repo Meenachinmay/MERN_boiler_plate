@@ -6,10 +6,10 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const config = require('./config/keys');
+const config = require('./server/config/keys');
 
-const { User } = require('./models/User');
-const { auth } = require('./middlewares/auth');
+const { User } = require('./server/models/User');
+const { auth } = require('./server/middlewares/auth');
 
 // connect the mongodb database
 mongoose.connect(config.mongoURI, {
